@@ -82,6 +82,12 @@
           '#18FFFF',
         ],
         map: null,
+        mHeight: 0,
+        mWidth: 0,
+        mX: 0,
+        mY: 0,
+        mDX: 0,
+        mDY: 0,
         room: null,
         selectedLatLng: null,
         distance: null,
@@ -228,7 +234,6 @@
         // Focus on map
         if (this.$viewport.width > 450) {
           document.getElementById('map').style.opacity = 1.0
-          document.getElementById('map').style.transform = 'scale(1.25)'
         }
       },
       mouseOutMap() {
@@ -236,10 +241,10 @@
         // Otherwise set the opacity of the map
         if (this.isSelected == false && this.$viewport.width > 450) {
           document.getElementById('map').style.opacity = 0.7
-          document.getElementById('map').style.transform = 'scale(1.0)'
         }
       },
     },
+
     mounted() {
       this.map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 37.869260, lng: -122.254811},
@@ -248,6 +253,43 @@
           mapTypeControl: false,
           streetViewControl: false,        
       })
+
+      let mapE = document.getElementById('map')
+      if (!mapE.className.includes("reszw")) {
+        mapE.className += " reszw"
+        var rz = document.createElement('div')
+        rz.id = 'mrz'
+        rz.style = "width: 20px;height: 20px;position: absolute;right: 0;top: 0;cursor: ne-resize;"
+        mapE.appendChild(rz)
+        var self = this
+        this.mWidth = mapE.clientWidth
+        this.mHeight = mapE.clientHeight
+
+        var startResize = function(evt) {
+          self.mX = evt.screenX;
+          self.mY = evt.screenY;
+        };
+
+        var resize = function(evt) {
+          self.mDX = evt.screenX - self.mX;
+          self.mDY = evt.screenY - self.mY;
+          self.mX = evt.screenX;
+          self.mY = evt.screenY;
+          self.mWidth += self.mDX;
+          self.mHeight -= self.mDY;
+          mapE.style.width = self.mWidth + "px";
+          mapE.style.height = self.mHeight + "px";
+        };
+
+        rz.addEventListener("mousedown", function(evt) {
+          startResize(evt);
+          document.body.addEventListener("mousemove", resize);
+          document.body.addEventListener("mouseup", function() {
+            document.body.removeEventListener("mousemove", resize);
+          });
+        });
+      }
+
 
       this.room = firebase.database().ref(this.roomName)
       this.room.on('value', (snapshot) => {
