@@ -20,9 +20,11 @@
       </v-card-title>
       <v-card-text>
         <v-container>
-          <v-div v-if="cardTitle == 'Set location'" style="background-color:yellow;">
-            <p> Todo: Show selection map here </p>
-          </v-div>
+          <div v-if="cardTitle == 'Set location'">
+            <div id="selector-map"></div>
+            <br>
+            <button id="fs-btn">Fullscreen</button>
+          </div>
           <v-row>
             <v-col 
               cols="12"
@@ -82,6 +84,8 @@
   </v-dialog>
 </template>
 
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=drawing&callback=initMap"
+         async defer></script>
 <script>
   import firebase from 'firebase/app'
   import 'firebase/database'
@@ -249,6 +253,15 @@
         this.room.child('playerName/player' + this.playerNumber).set(this.playerName, (error) => {
           if (!error) {
             this.cardTitle = 'Set location'
+            this.$nextTick(function () {
+              this.map = new google.maps.Map(document.getElementById('selector-map'), {
+                  center: {lat: 37.869260, lng: -122.254811},
+                  zoom: 1,
+                  fullscreenControl: false,
+                  mapTypeControl: false,
+                  streetViewControl: false,
+              })
+            })
             // Start the game
             /*this.$router.push({
               name: 'with-friends',
@@ -302,5 +315,18 @@
     font-weight: 500;
     color: #FFFFFF;
     opacity: 0.9;
+  }
+
+  #selector-map {
+    height:400px;
+    width:500px;
+  }
+
+  #fs-btn {
+    color: #fff;
+    border-radius: 3px;
+    background-color: #ffd96778;
+    font-weight: 500;
+    padding: 3px 15px 3px 15px;
   }
 </style>
