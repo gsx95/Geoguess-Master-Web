@@ -12,6 +12,46 @@
         </v-row>
       </v-container>
     </div>
+        <v-footer
+      id="footer"
+      absolute
+      color="#061422"
+      height="210">
+      <v-container>
+        <v-row justify="center">
+          <v-btn
+            class="ml-4 mr-4" 
+            icon
+            color="#FFFFFF"
+            href="https://github.com/spider-hand/Geoguess-Master-Web">
+            <v-icon size="30">mdi-github-circle</v-icon>
+          </v-btn>
+        </v-row>
+        <v-row
+          class="mt-8" 
+          justify="center">
+          <span id="copyright-text">All rights reserved. Copyright © {{ new Date().getFullYear() }} <strong>Spider Hand</strong></span>
+        </v-row>
+        <v-row
+          class="mt-1"
+          justify="center">
+          <span id="credit-text">
+            Photo by <a href="https://unsplash.com/@nasa">NASA</a> on <a href="https://unsplash.com/">Unsplash</a>, 
+            Design by <a href="http://www.pauloxgomes.com/">Paulo Gomes</a>
+          </span>
+        </v-row>
+        <v-row
+          class="mt-3"
+          justify="center">
+          <v-btn
+            text
+            color="#FFFFFF"
+            @click="$router.push('privacy-policy')">
+            <span id="privacy-policy">Privacy Policy</span>
+          </v-btn>
+        </v-row>
+      </v-container>
+    </v-footer>
   </div>
 </template>
 
@@ -72,42 +112,7 @@
     top: 300px;
   }
 
-  #single-player-button {
-    height: 44px;
-    width: 240px;
-    border-radius: 40px;
-  }
 
-  #section-about {
-    position: absolute;
-    width: 100%;
-    height: 430px;
-    left: 0px;
-    top: 640px;
-    background: #FAFAFA;
-  }
-
-  #section-limitation {
-    position: absolute;
-    width: 100%;
-    height: 430px;
-    left: 0px;
-    top: 1070px;
-    background: #F4F4F4;
-  }
-
-  .section-header {
-    position: absolute;
-    top: 94px;
-    color: #52575C;
-  }
-
-  .section-description {
-    position: absolute;
-    top: 148px;
-    padding: 0 18%;
-    color: #777777;
-  }
 
   #copyright-text, #credit-text {
     font-size: 12px;
@@ -118,10 +123,6 @@
     font-size: 12px;
   }
 
-  #footer {
-    top: 1500px;
-    bottom: 0px;
-  }
 
   @media (max-width: 450px) {
     #row-buttons {
