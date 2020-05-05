@@ -277,6 +277,18 @@
                   mapTypeControl: false,
                   streetViewControl: false,
               })
+
+              this.drawingManager = new google.maps.drawing.DrawingManager({
+                drawingMode: google.maps.drawing.OverlayType.POLYGON,
+                drawingControl: true,
+                drawingControlOptions: {
+                  position: google.maps.ControlPosition.TOP_CENTER,
+                  drawingModes: ['polygon', 'rectangle']
+                },
+                markerOptions: {icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'},
+              });
+              this.drawingManager.setMap(this.map);
+
             })
             // Start the game
             /*this.$router.push({
