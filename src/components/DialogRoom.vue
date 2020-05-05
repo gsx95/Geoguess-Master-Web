@@ -20,6 +20,9 @@
       </v-card-title>
       <v-card-text>
         <v-container>
+          <v-div v-if="cardTitle == 'Set location'" style="background-color:yellow;">
+            <p> Todo: Show selection map here </p>
+          </v-div>
           <v-row>
             <v-col 
               cols="12"
@@ -172,6 +175,8 @@
           this.setTimeLimitation()
         } else if (this.cardTitle == 'Type a player name') {
           this.setPlayerName()
+        }else if (this.cardTitle == 'Set location') {
+          this.setLocation()
         }
       },
       searchRoom() {
@@ -243,16 +248,21 @@
       setPlayerName() {
         this.room.child('playerName/player' + this.playerNumber).set(this.playerName, (error) => {
           if (!error) {
+            this.cardTitle = 'Set location'
             // Start the game
-            this.$router.push({
+            /*this.$router.push({
               name: 'with-friends',
               params: { 
                 roomName: this.roomName, 
                 playerNumber: this.playerNumber, 
               }
-            })
+            })*/
           }
         })
+      },
+      setLocation() {
+        // TODO: set location and save in firebase
+
       },
       cancel() {
         // Reset
