@@ -266,10 +266,21 @@
         })
       },
       setPlayerName() {
+        let self = this;
         this.room.child('playerName/player' + this.playerNumber).set(this.playerName, (error) => {
           if (!error) {
+            window.addEventListener('keydown', function(e) {
+              if (e.keyCode != 46) {
+                return
+              }
+              if(self.selectedPolygon == null || self.selectedPolygon == undefined) {
+                return
+              }
+              self.deleteSelectedPolygon()
+            });
             this.cardTitle = 'Set location'
             this.$nextTick(function () {
+              this.areas = []
               this.map = new google.maps.Map(document.getElementById('selector-map'), {
                   center: {lat: 37.869260, lng: -122.254811},
                   zoom: 1,
@@ -287,6 +298,35 @@
                 },
                 markerOptions: {icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'},
               });
+              google.maps.event.addListener(this.drawingManager, 'overlaycomplete', function(event) {
+                if (event.type == 'polygon' || event.type == 'rectangle') {
+                  event.overlay.setMap(null);
+                  if(event.type == 'polygon') {
+                    self.areas.push(new google.maps.Polygon({
+                      paths: event.overlay.getPath().getArray(),
+                      strokeColor: '#000000',
+                      strokeOpacity: 0.8,
+                      strokeWeight: 3,
+                      fillColor: '#000000',
+                      fillOpacity: 0.35
+                    }));
+                  } else {
+                    self.areas.push(new google.maps.Rectangle({
+                      bounds: event.overlay.getBounds(),
+                      strokeColor: '#000000',
+                      strokeOpacity: 0.8,
+                      strokeWeight: 3,
+                      fillColor: '#000000',
+                      fillOpacity: 0.35
+                    }));
+                  }
+                  self.areas[self.areas.length - 1].setMap(self.map);
+                  self.areas[self.areas.length - 1].addListener('click', function(e, p1, p2) {
+                    self.selectArea(this, self)
+                  });
+                  console.log(self.areas.length);
+                } 
+              });
               this.drawingManager.setMap(this.map);
 
             })
@@ -300,6 +340,38 @@
             })*/
           }
         })
+      },
+      selectArea(polygon, self) {
+        for(let i = 0; i < self.areas.length; i++) {
+          self.setPolygonColor(self.areas[i], '#000000')
+        }
+        self.setPolygonColor(polygon, '#ff0000')
+        self.selectedPolygon = polygon
+      },
+      setPolygonColor(polygon, color) {
+        var options = {
+          strokeColor: color,
+          strokeOpacity: 0.8,
+          strokeWeight: 3,
+          fillColor: color,
+          fillOpacity: 0.35
+        }
+        if(polygon.getBounds) {
+          options.bounds = polygon.getBounds()
+        }else{
+          options.paths = polygon.getPaths().getArray()
+        }
+        polygon.setOptions(options)
+      },
+      deleteSelectedPolygon() {
+        this.selectedPolygon.setMap(null)
+        for(let i = 0;i < this.areas.length; i++) {
+          if(this.areas[i] == this.selectedPolygon) {
+            this.areas.splice(i, 1);
+            break;
+          }
+        }
+        this.selectedPolygon = null
       },
       setLocation() {
         // TODO: set location and save in firebase
