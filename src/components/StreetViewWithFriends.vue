@@ -44,6 +44,7 @@
     props: [
       'roomName',
       'playerNumber',
+      'areas'
     ],
     components: {
       HeaderGame,
@@ -74,7 +75,7 @@
       loadStreetView() {
         var service = new google.maps.StreetViewService()
         service.getPanorama({
-          location: this.getRandomLatLng(),
+          location: this.getRandomLatLng(this.areas),
           preference: 'nearest',
           radius: 100000,
           source: 'outdoor',
@@ -93,8 +94,9 @@
           source: 'outdoor',
         }, this.checkStreetView)        
       },
-      getRandomLatLng() {
+      getRandomLatLng(selectedAreas) {
         // Generate a random latitude and longitude
+        // TODO: only generate positions within the specified areas
         var lat = (Math.random() * 170) - 85
         var lng = (Math.random() * 360) - 180
         return new google.maps.LatLng(lat, lng)

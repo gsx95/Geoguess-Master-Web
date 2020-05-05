@@ -330,14 +330,6 @@
               this.drawingManager.setMap(this.map);
 
             })
-            // Start the game
-            /*this.$router.push({
-              name: 'with-friends',
-              params: { 
-                roomName: this.roomName, 
-                playerNumber: this.playerNumber, 
-              }
-            })*/
           }
         })
       },
@@ -374,7 +366,15 @@
         this.selectedPolygon = null
       },
       setLocation() {
-        // TODO: set location and save in firebase
+      // Start the game
+      this.$router.push({
+        name: 'with-friends',
+        params: { 
+          roomName: this.roomName, 
+          playerNumber: this.playerNumber,
+          areas: this.areas,
+        }
+      })
 
       },
       cancel() {
