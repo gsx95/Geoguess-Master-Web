@@ -23,7 +23,7 @@
           <div v-if="cardTitle == 'Set location'">
             <div id="selector-map"></div>
             <br>
-            <button id="fs-btn">Fullscreen</button>
+            <v-btn depressed @click="fsMap" id="fs-btn">Fullscreen</v-btn>
           </div>
           <v-row>
             <v-col 
@@ -169,6 +169,22 @@
       }
     },
     methods: {
+      fsMap() {
+        var mapDiv = document.getElementById('selector-map')
+        if(mapDiv.webkitRequestFullscreen) {
+          mapDiv.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+        }
+        if(mapDiv.mozRequestFullScreen) {
+          mapDiv.mozRequestFullScreen();
+        }
+        if(mapDiv.msRequestFullscreen) {
+          mapDiv.msRequestFullscreen();
+        }
+        if(mapDiv.webkitRequestFullscreen) {
+          mapDiv.requestFullscreen(); // standard
+        }
+
+      },
       clickNext() {
         if (this.cardTitle == 'Type a room name') {
           this.searchRoom()
@@ -324,9 +340,8 @@
 
   #fs-btn {
     color: #fff;
-    border-radius: 3px;
     background-color: #ffd96778;
-    font-weight: 500;
+    height:auto;
     padding: 3px 15px 3px 15px;
   }
 </style>
