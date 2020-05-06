@@ -258,9 +258,13 @@
       if (!mapE.className.includes("reszw")) {
         mapE.className += " reszw"
         var rz = document.createElement('div')
-        rz.id = 'mrz'
-        rz.style = "width: 20px;height: 20px;position: absolute;right: 0;top: 0;cursor: ne-resize;"
+        rz.id = 'mrz-parent'
+        rz.style = "width: 20px;height: 20px;position: absolute;right: 0;top: 0;cursor: ne-resize; margin-right:-10px; margin-top:-10px;"
         mapE.appendChild(rz)
+        var rs = document.createElement('div')
+        rs.id = 'mrz'
+        rs.style = "width: 20px; height: 20px; position:fixed; "
+        rz.appendChild(rs)
         var self = this
         this.mWidth = mapE.clientWidth
         this.mHeight = mapE.clientHeight
@@ -281,7 +285,7 @@
           mapE.style.height = self.mHeight + "px";
         };
 
-        rz.addEventListener("mousedown", function(evt) {
+        rs.addEventListener("mousedown", function(evt) {
           startResize(evt);
           document.body.addEventListener("mousemove", resize);
           document.body.addEventListener("mouseup", function() {
