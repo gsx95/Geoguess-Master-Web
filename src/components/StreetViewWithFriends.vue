@@ -73,6 +73,7 @@
         isReady: false,
         dialogMessage: true,
         dialogTitle: 'Waiting for other players...',
+        searchRadius: 10,
         dialogText: '',
       }
     },
@@ -82,20 +83,22 @@
         service.getPanorama({
           location: this.getRandomLatLng(this.areas),
           preference: 'nearest',
-          radius: 100000,
+          radius: this.searchRadius,
           source: 'outdoor',
         }, this.checkStreetView)
       },
       loadDecidedStreetView() {
         // Other players load the decided streetview the first player loaded
         var service = new google.maps.StreetViewService()
+        
+        console.log("try:   " + this.randomLat + "  " + this.randomLng)
         service.getPanorama({
           location: {
             lat: this.randomLat,
             lng: this.randomLng,
           },
           preference: 'nearest',
-          radius: 100000,
+          radius: 5,
           source: 'outdoor',
         }, this.checkStreetView)        
       },
@@ -196,14 +199,17 @@
 
           // Save the location's latitude and longitude
           this.randomLatLng = data.location.latLng
-
+          this.searchRadius = 10
           // Put the streetview's location into firebase
+          console.log("decided on:  " + this.randomLatLng.lat() + "   " + this.randomLatLng.lng())
           this.room.child('streetView/round' + this.round).set({
             latitude: this.randomLatLng.lat(),
             longitude:this.randomLatLng.lng()
           })
 
         } else {
+          console.log(status)
+          this.searchRadius = this.searchRadius * 2
           this.loadStreetView()
         }
       },
@@ -299,7 +305,7 @@
             if (this.playerNumber != 1) {
               this.randomLat = snapshot.child('streetView/round' + this.round + '/latitude').val()
               this.randomLng = snapshot.child('streetView/round' + this.round + '/longitude').val()
-
+              console.log("1:   " + this.randomLat + "  " + this.randomLng)
               this.loadDecidedStreetView()
             }
           }
