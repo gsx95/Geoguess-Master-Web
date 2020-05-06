@@ -269,6 +269,19 @@
         let self = this;
         this.room.child('playerName/player' + this.playerNumber).set(this.playerName, (error) => {
           if (!error) {
+
+            if(this.playerNumber != 1) {
+              this.$router.push({
+                name: 'with-friends',
+                params: { 
+                  roomName: this.roomName, 
+                  playerNumber: this.playerNumber,
+                  areas: this.areas,
+                }
+              })
+              return
+            }
+            this.cardTitle = 'Set location'
             window.addEventListener('keydown', function(e) {
               if (e.keyCode != 46) {
                 return
@@ -278,7 +291,6 @@
               }
               self.deleteSelectedPolygon()
             });
-            this.cardTitle = 'Set location'
             this.$nextTick(function () {
               this.areas = []
               this.map = new google.maps.Map(document.getElementById('selector-map'), {

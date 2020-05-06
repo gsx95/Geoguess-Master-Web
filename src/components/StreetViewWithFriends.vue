@@ -103,6 +103,11 @@
         }, this.checkStreetView)        
       },
       getRandomLatLng(selectedAreas) {
+        if(selectedAreas == null || selectedAreas == undefined || !selectedAreas.length || selectedAreas.length <= 0) {
+          var lat = (Math.random() * 170) - 85
+          var lng = (Math.random() * 360) - 180
+          return new google.maps.LatLng(lat, lng)
+        }
         let randomAreaIndex = this.getRandomInt(0, selectedAreas.length - 1)
         let area = selectedAreas[randomAreaIndex]
         let boundBox = this.getAreaBoundBox(area)
