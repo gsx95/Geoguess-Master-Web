@@ -303,7 +303,7 @@
                   event.overlay.setMap(null);
                   if(event.type == 'polygon') {
                     self.areas.push(new google.maps.Polygon({
-                      paths: event.overlay.getPath().getArray(),
+                      paths: event.overlay.getPaths().getArray(),
                       strokeColor: '#000000',
                       strokeOpacity: 0.8,
                       strokeWeight: 3,

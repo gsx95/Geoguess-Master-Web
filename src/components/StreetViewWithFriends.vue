@@ -40,6 +40,11 @@
   import MapsWithFriends from '@/components/MapsWithFriends'
   import DialogMessage from '@/components/DialogMessage'
 
+  import { randomPoint, randomPolygon } from '@turf/random';
+  import _ from '@turf/boolean-point-in-polygon';
+  import { polygon } from '@turf/helpers'
+  import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
+
   export default {
     props: [
       'roomName',
@@ -95,11 +100,82 @@
         }, this.checkStreetView)        
       },
       getRandomLatLng(selectedAreas) {
-        // Generate a random latitude and longitude
-        // TODO: only generate positions within the specified areas
-        var lat = (Math.random() * 170) - 85
-        var lng = (Math.random() * 360) - 180
+        let randomAreaIndex = this.getRandomInt(0, selectedAreas.length - 1)
+        let area = selectedAreas[randomAreaIndex]
+        let boundBox = this.getAreaBoundBox(area)
+        let turfPoly = this.toTurfPoly(area)
+        
+        let pointInsidePolygon = null;
+
+        while(pointInsidePolygon == null || pointInsidePolygon == undefined){
+          let rPoints = randomPoint(10, {bbox: boundBox}).features
+          for(let i = 0; i < rPoints.length; i++) {
+            let testPoint = rPoints[i]
+            let isInside = booleanPointInPolygon(testPoint, turfPoly)
+            if(isInside) {
+              pointInsidePolygon = testPoint
+              break;
+            }
+          }
+        }
+        
+        var lat = pointInsidePolygon.geometry.coordinates[0]
+        var lng = pointInsidePolygon.geometry.coordinates[1]
+        console.log("lat/lon:      "+ lat + "  " + lng)
         return new google.maps.LatLng(lat, lng)
+      },
+      toTurfPoly(area) {
+        let points = this.pointsOfArea(area)
+        let pArr = []
+        for(let i = 0;i < points.length; i++) {
+          let point = points[i]
+          let lat = point.lat()
+          let lon = point.lng()
+          let coords = [lat, lon]
+          pArr.push(coords)
+        }
+
+        let firstPoint = points[0]
+        let coords = [firstPoint.lat(), firstPoint.lng()]
+        pArr.push(coords)        
+        return polygon([pArr])
+      },
+      getAreaBoundBox(area) {
+        let points = this.pointsOfArea(area)
+        let minLat = 500
+        let maxLat = -500
+        let minLon = 500
+        let maxLon = -500
+        for(let i = 0;i < points.length; i++) {
+          let point = points[i]
+          let lat = point.lat()
+          let lon = point.lng()
+
+          minLat = (lat < minLat) ? lat : minLat
+          maxLat = (lat > maxLat) ? lat : maxLat
+          minLon = (lon < minLon) ? lon : minLon
+          maxLon = (lon > maxLon) ? lon : maxLon
+        }
+        return [
+          minLat,
+          minLon,
+          maxLat,
+          maxLon,
+        ]
+      },
+      pointsOfArea(area) {
+        let points;
+        if(!area.getPaths){
+          points = area.getBounds().Array
+        }else {
+          points = area.getPaths().getArray()[0].i
+        }
+        return points
+      },
+      getRandomInt(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
       },
       checkStreetView(data, status) {
         // Generate random streetview until the valid one is generated
