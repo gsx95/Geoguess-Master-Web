@@ -306,25 +306,16 @@
                 drawingControl: true,
                 drawingControlOptions: {
                   position: google.maps.ControlPosition.TOP_CENTER,
-                  drawingModes: ['polygon', 'rectangle']
+                  drawingModes: ['polygon']
                 },
                 markerOptions: {icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'},
               });
               google.maps.event.addListener(this.drawingManager, 'overlaycomplete', function(event) {
-                if (event.type == 'polygon' || event.type == 'rectangle') {
+                if (event.type == 'polygon') {
                   event.overlay.setMap(null);
                   if(event.type == 'polygon') {
                     self.areas.push(new google.maps.Polygon({
                       paths: event.overlay.getPaths().getArray(),
-                      strokeColor: '#000000',
-                      strokeOpacity: 0.8,
-                      strokeWeight: 3,
-                      fillColor: '#000000',
-                      fillOpacity: 0.35
-                    }));
-                  } else {
-                    self.areas.push(new google.maps.Rectangle({
-                      bounds: event.overlay.getBounds(),
                       strokeColor: '#000000',
                       strokeOpacity: 0.8,
                       strokeWeight: 3,
@@ -360,11 +351,7 @@
           fillColor: color,
           fillOpacity: 0.35
         }
-        if(polygon.getBounds) {
-          options.bounds = polygon.getBounds()
-        }else{
-          options.paths = polygon.getPaths().getArray()
-        }
+        options.paths = polygon.getPaths().getArray()
         polygon.setOptions(options)
       },
       deleteSelectedPolygon() {

@@ -33,6 +33,7 @@
 </template>
 
 <script>
+
   import firebase from 'firebase/app'
   import 'firebase/database'
 
@@ -172,13 +173,7 @@
         ]
       },
       pointsOfArea(area) {
-        let points;
-        if(!area.getPaths){
-          points = area.getBounds().Array
-        }else {
-          points = area.getPaths().getArray()[0].i
-        }
-        return points
+        return area.getPaths().getArray()[0].i
       },
       getRandomInt(min, max) {
         min = Math.ceil(min);
