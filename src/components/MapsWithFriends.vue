@@ -166,7 +166,7 @@
         this.markers = []
       },
       calculateDistance() {
-        this.distance = Math.floor(google.maps.geometry.spherical.computeDistanceBetween(this.randomLatLng, this.selectedLatLng) / 1000)
+        this.distance = google.maps.geometry.spherical.computeDistanceBetween(this.randomLatLng, this.selectedLatLng)
 
         // Save the distance into firebase
         this.room.child('round' + this.round + '/player' + this.playerNumber).set(this.distance)
@@ -174,8 +174,15 @@
         this.$emit('calculateDistance', this.distance)
       },
       setInfoWindow(playerName, distance) {
+        
+        let text =  '<b>' + playerName + '</b>' + ' is <b>{%DIST%}</b> away!'
+        if(distance < 20000) {
+          text = text.replace("{%DIST%}", "" + distance.toFixed(2) + "m", 1)
+        }else{
+          text = text.replace("{%DIST%}", "" + ((distance/1000).toFixed(2)) + "km", 1)
+        }
         var infoWindow = new google.maps.InfoWindow({
-          content: '<b>' + playerName + '</b>' + ' is <b>' + distance + '</b> km away!'
+          content: text
         })
         infoWindow.open(this.map, this.markers[this.markers.length - 1])
       },

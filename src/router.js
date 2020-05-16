@@ -30,11 +30,6 @@ export default new Router ({
       component: Home,
     },
     {
-      path: '/street-view',
-      name: 'street-view',
-      component: StreetView,
-    },
-    {
       path: '/street-view/with-friends',
       name: 'with-friends',
       component: StreetViewWithFriends,
