@@ -21,6 +21,9 @@
         @goToNextRound="goToNextRound"
         @finishGame="finishGame" />
     </div>
+    <div id="back-btn-container">
+      <button role="button" id="back-btn">Back to Start</button>
+      </div>
     <v-overlay 
       :value="overlay"
       opacity="0.8" 
@@ -202,6 +205,8 @@
           this.searchRadius = 10
           // Put the streetview's location into firebase
           console.log("decided on:  " + this.randomLatLng.lat() + "   " + this.randomLatLng.lng())
+          this.randomLat = this.randomLatLng.lat();
+          this.randomLng = this.randomLatLng.lng();
           this.room.child('streetView/round' + this.round).set({
             latitude: this.randomLatLng.lat(),
             longitude:this.randomLatLng.lng()
@@ -262,6 +267,9 @@
         }
 
       },
+      backToStart() {
+        this.loadDecidedStreetView();
+      },
       exitGame() {
         // Disable the listener and force the players to exit the game
         this.dialogTitle = 'Redirect to Home Page...'
@@ -285,7 +293,6 @@
       if (this.playerNumber == 1) {
         this.loadStreetView()
       }
-
       // Set a room name if it's null to detect when the user refresh the page
       if (this.roomName == null) {
         this.roomName = 'defaultRoomName'
@@ -309,10 +316,12 @@
               this.loadDecidedStreetView()
             }
           }
-
+          let self = this;
           // Enable guess button when every players are put into the current round's node
           if (snapshot.child('round' + this.round).numChildren() == snapshot.child('size').val()) {
-
+            document.getElementById("back-btn").addEventListener("click", function(){
+              self.backToStart()
+            })
             // Close the dialog when evryone is ready
             if (this.isReady == false) {
               this.dialogMessage = false
@@ -370,6 +379,23 @@
     width: 100%; 
     top: 0; 
     left: 0;
+  }
+
+  #back-btn-container {
+    bottom: 0;
+    height: 40px;
+    width: 150px;
+    z-index: 3;
+    position: absolute;
+    left: 40%;
+  }
+
+  #back-btn {
+    width:100%; 
+    height:100%;
+    background-color: #313131;
+    border-radius: 20px 20px 0px 0px;
+    color: white;
   }
 
   #street-view-container {
