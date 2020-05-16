@@ -4,6 +4,25 @@
 
 https://geoguessmaster.com/
 
+### Changes
+Changes I made on this fork:
+
+* Players can restrict the playing area (the player who creates the room can draw one or multiple areas on a world map; only points within those areas are chosen for the game)
+* Let players resize the mini map
+* Let players go back to the starting point of this round (useful if you play e.g. in one city, and distances within a meter-radius matter)
+* Display the distance to the actual location in meters if appropriate
+* Remove Singleplayer
+
+What i still want to do:
+* Introduce backend application: 
+  * Remove firebase dependecy and store data via backend server
+  * Put logic in backend
+* Let room creation be one screen
+* List available rooms on home
+* Rewrite frontend to only use vanilla JS after introducing the backend
+  
+  
+
 ### About
 Free and lazy geoguess game with no ads. 
 Players compete how close the player can guess random locations in five rounds. 
