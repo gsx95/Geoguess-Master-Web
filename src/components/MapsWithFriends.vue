@@ -218,6 +218,8 @@
         this.isGuessButtonClicked = false
         this.isSelected = false
         this.isNextButtonVisible = false
+        this.map.setCenter(new google.maps.LatLng(37.869260, -122.254811));
+        this.map.setZoom(1);
 
         if (this.$viewport.width < 450) {
           // Hide the map if the player is on mobile
