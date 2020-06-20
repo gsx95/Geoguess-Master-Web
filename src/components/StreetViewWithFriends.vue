@@ -47,7 +47,7 @@
 
   import { randomPoint, randomPolygon } from '@turf/random';
   import _ from '@turf/boolean-point-in-polygon';
-  import { polygon } from '@turf/helpers'
+  import { polygon, point } from '@turf/helpers'
   import booleanPointInPolygon from '@turf/boolean-point-in-polygon'
 
   export default {
@@ -70,6 +70,7 @@
         selectedLocation: null,
         score: 0,
         scoreHeader: 0,
+        turfPoly: null,
         round: 1,
         timeLimitation: 0,
         remainingTime: 0,
@@ -97,7 +98,7 @@
       loadDecidedStreetView() {
         // Other players load the decided streetview the first player loaded
         var service = new google.maps.StreetViewService()
-        
+
         console.log("try:   " + this.randomLat + "  " + this.randomLng)
         service.getPanorama({
           location: {
@@ -118,7 +119,7 @@
         let randomAreaIndex = this.getRandomInt(0, selectedAreas.length - 1)
         let area = selectedAreas[randomAreaIndex]
         let boundBox = this.getAreaBoundBox(area)
-        let turfPoly = this.toTurfPoly(area)
+        this.turfPoly = this.toTurfPoly(area)
         
         let pointInsidePolygon = null;
 
@@ -126,7 +127,7 @@
           let rPoints = randomPoint(10, {bbox: boundBox}).features
           for(let i = 0; i < rPoints.length; i++) {
             let testPoint = rPoints[i]
-            let isInside = booleanPointInPolygon(testPoint, turfPoly)
+            let isInside = booleanPointInPolygon(testPoint, this.turfPoly)
             if(isInside) {
               pointInsidePolygon = testPoint
               break;
@@ -189,6 +190,19 @@
       checkStreetView(data, status) {
         // Generate random streetview until the valid one is generated
         if (status == 'OK') {
+          // Save the location's latitude and longitude
+          this.randomLatLng = data.location.latLng
+          this.searchRadius = 10
+          // Put the streetview's location into firebase
+          console.log("decided on:  " + this.randomLatLng.lat() + "   " + this.randomLatLng.lng())
+          this.randomLat = this.randomLatLng.lat();
+          this.randomLng = this.randomLatLng.lng();
+          var testPoint = point([this.randomLat, this.randomLng]);
+          if(this.turfPoly != null && !booleanPointInPolygon(testPoint, this.turfPoly)){
+            this.searchRadius = this.searchRadius * 2
+            this.loadStreetView()
+          }
+
           this.panorama = new google.maps.StreetViewPanorama(document.getElementById('street-view'))
           this.panorama.setOptions({
             addressControl: false,
@@ -203,13 +217,6 @@
             pitch: 0,
           })
 
-          // Save the location's latitude and longitude
-          this.randomLatLng = data.location.latLng
-          this.searchRadius = 10
-          // Put the streetview's location into firebase
-          console.log("decided on:  " + this.randomLatLng.lat() + "   " + this.randomLatLng.lng())
-          this.randomLat = this.randomLatLng.lat();
-          this.randomLng = this.randomLatLng.lng();
           this.room.child('streetView/round' + this.round).set({
             latitude: this.randomLatLng.lat(),
             longitude:this.randomLatLng.lng()
