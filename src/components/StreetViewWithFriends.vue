@@ -19,6 +19,7 @@
         @calculateDistance="updateScore"
         @showResult="showResult"
         @goToNextRound="goToNextRound"
+        @locationSelected="locationSelected"
         @finishGame="finishGame" />
     </div>
     <div id="back-btn-container">
@@ -66,6 +67,7 @@
         randomLat: null,
         randomLng: null,
         panorama: null,
+        selectedLocation: null,
         score: 0,
         scoreHeader: 0,
         round: 1,
@@ -228,7 +230,11 @@
             }, 1000)
           } else {
             // Set a random location if the player didn't select a location in time
-            this.$refs.map.selectRandomLocation(this.getRandomLatLng())
+            if(this.selectedLocation == null) {
+              this.$refs.map.selectRandomLocation(this.getRandomLatLng())
+            } else {
+              this.$refs.map.selectRandomLocation(this.selectedLocation)
+            }
           }
         }
       },
@@ -246,6 +252,9 @@
         this.scoreHeader = this.score  // Update the score on header after every players guess locations
         this.dialogMessage = false
         this.overlay = true
+      },
+      locationSelected(location) {
+        this.selectedLocation = location;
       },
       goToNextRound() {
         // Reset

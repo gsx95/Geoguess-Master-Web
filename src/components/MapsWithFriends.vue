@@ -208,6 +208,8 @@
 
           // Save latLng
           this.selectedLatLng = e.latLng
+
+          this.$emit('locationSelected', e.latLng);
         })   
       },
       goToNextRound() {
