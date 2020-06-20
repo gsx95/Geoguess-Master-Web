@@ -27,23 +27,6 @@
             @click="finishGame">EXIT</v-btn>
         </v-row>
       </v-card-text>
-      <v-card-text class="text-right">
-        <v-btn
-          target="_blank"
-          :href="'http://www.facebook.com/sharer.php?u=https://geoguessmaster.com/&amp;t=I am ' + score + ' km away! How close can you guess?'" 
-          rel="nofollow"
-          icon
-          color="#FFFFFF">
-          <v-icon size="32">mdi-facebook-box</v-icon>
-        </v-btn>
-        <v-btn
-          target="_blank"
-          :href="'http://twitter.com/share?url=https://geoguessmaster.com/&amp;text=I am ' + score +' km away! How close can you guess?'" 
-          icon
-          color="#FFFFFF">
-          <v-icon size="32">mdi-twitter-box</v-icon>
-        </v-btn>
-      </v-card-text>
     </v-card>
   </v-dialog>
 </template>

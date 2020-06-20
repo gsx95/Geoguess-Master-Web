@@ -124,7 +124,6 @@
       },
       selectLocation() {
         this.calculateDistance()
-
         // Save the selected location into database
         // So that it uses for putting the markers and polylines
         this.room.child('guess/player' + this.playerNumber).set({
@@ -176,7 +175,7 @@
       setInfoWindow(playerName, distance) {
         
         let text =  '<b>' + playerName + '</b>' + ' is <b>{%DIST%}</b> away!'
-        if(distance < 20000) {
+        if(distance < 1000) {
           text = text.replace("{%DIST%}", "" + distance.toFixed(2) + "m", 1)
         }else{
           text = text.replace("{%DIST%}", "" + ((distance/1000).toFixed(2)) + "km", 1)
@@ -338,9 +337,14 @@
               snapshot.child('finalScore').forEach((childSnapshot) => {
                 var playerName = snapshot.child('playerName').child(childSnapshot.key).val()
                 var finalScore = childSnapshot.val()
+
+                var scoreText = finalScore.toFixed(2) + "m";
+                if(finalScore > 1000) {
+                  scoreText = (finalScore/1000).toFixed(2) + "km";
+                }
                 this.summaryTexts.push({
                   playerName: playerName,
-                  finalScore: finalScore,
+                  finalScore: scoreText,
                 })
               })
 

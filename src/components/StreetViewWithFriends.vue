@@ -65,6 +65,7 @@
         randomLatLng: null,
         randomLat: null,
         randomLng: null,
+        panorama: null,
         score: 0,
         scoreHeader: 0,
         round: 1,
@@ -186,16 +187,16 @@
       checkStreetView(data, status) {
         // Generate random streetview until the valid one is generated
         if (status == 'OK') {
-          var panorama = new google.maps.StreetViewPanorama(document.getElementById('street-view'))
-          panorama.setOptions({
+          this.panorama = new google.maps.StreetViewPanorama(document.getElementById('street-view'))
+          this.panorama.setOptions({
             addressControl: false,
             fullscreenControl: false,
             motionTracking: false,
             motionTrackingControl: false,
             showRoadLabels: false,
           })
-          panorama.setPano(data.location.pano)
-          panorama.setPov({
+          this.panorama.setPano(data.location.pano)
+          this.panorama.setPov({
             heading: 270,
             pitch: 0,
           })
@@ -268,7 +269,7 @@
 
       },
       backToStart() {
-        this.loadDecidedStreetView();
+        this.panorama.setPosition(this.randomLatLng);
       },
       exitGame() {
         // Disable the listener and force the players to exit the game

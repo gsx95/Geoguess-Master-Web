@@ -20,7 +20,7 @@
         <span class="sub-text">SCORE: </span>
       </div>
       <div>
-        <span class="main-text">{{ score }} km away</span>
+        <span class="main-text">{{ getScoreText }} away</span>
       </div>
     </v-app-bar>
   </div>
@@ -40,6 +40,14 @@
         if (minutes < 10) { minutes = '0' + minutes }
         if (seconds < 10) { seconds = '0' + seconds }
         return minutes + ':' + seconds
+      },
+      getScoreText() {
+        var distance = this.score;
+        if(distance < 1000) {
+          return distance.toFixed(0) + "m";
+        }else{
+          return (distance/1000).toFixed(0) + "km";
+        }
       },
     },
   }
