@@ -98,6 +98,8 @@
         isNextButtonVisible: false,
         isSummaryButtonVisible: false,
         dialogSummary: false,
+        drewPolygon1: false,
+        drewPolygon1: false,
       }
     },
     computed: {
@@ -199,6 +201,7 @@
         }
       },
       startNextRound() {
+
         this.map.addListener('click', (e) => {
           // Clear the previous marker when clicking the map
           this.removeMarkers()
@@ -264,6 +267,61 @@
           streetViewControl: false,        
       })
 
+      this.room = firebase.database().ref(this.roomName);
+
+        var outerbounds = [ // covers the (mercator projection) world
+              new google.maps.LatLng(-85.1054596961173, -180),
+              new google.maps.LatLng(85.1054596961173, -180),
+              new google.maps.LatLng(85.1054596961173, 180),
+              new google.maps.LatLng(-85.1054596961173, 180),
+              new google.maps.LatLng(-85.1054596961173, 0)
+          ];
+
+      let self = this;
+      this.room.on('value', (snapshot) => {
+        if(self.drewPolygon1 && this.playerNumber == 1) {
+          return;
+        }
+        if(self.drewPolygon2 && this.playerNumber == 2) {
+          return;
+        }
+        if (snapshot.hasChild('active')) {
+          let areasData = snapshot.child('areas').val()
+          if(areasData == undefined || areasData == null || areasData.length == undefined) {
+            return;
+          }
+          let polyData = [];
+          polyData.push(outerbounds);
+
+          for(let i = 0;i<areasData.length;i++) {
+            let area = areasData[i];
+            let ar = [];
+            for(let j = 0;j<area.length;j++) {
+              let p = area[j];
+              ar.push(new google.maps.LatLng(p.lat, p.lng));
+            }
+            if(google.maps.geometry.spherical.computeSignedArea(ar) >= 0 ){
+                polyData.push(ar);
+            } else {
+                polyData.push(ar.reverse());
+            }
+          }
+          if(self.playerNumber == 1) {
+            self.drewPolygon1 = true;
+          }else {
+            self.drewPolygon2 = true;
+          }
+          let polygon = new google.maps.Polygon({
+                            paths: polyData,
+                            strokeColor: "#000000",
+                            strokeOpacity: 0.6,
+                            strokeWeight: 1,
+                            map:self.map
+           });
+          }
+      })
+
+
       let mapE = document.getElementById('map')
       if (!mapE.className.includes("reszw")) {
         mapE.className += " reszw"
@@ -275,7 +333,6 @@
         rs.id = 'mrz'
         rs.style = "width: 20px; height: 20px; position:fixed; "
         rz.appendChild(rs)
-        var self = this
         this.mWidth = mapE.clientWidth
         this.mHeight = mapE.clientHeight
 
@@ -304,8 +361,6 @@
         });
       }
 
-
-      this.room = firebase.database().ref(this.roomName)
       this.room.on('value', (snapshot) => {
         // Check if the room is already removed
         if (snapshot.hasChild('active')) {

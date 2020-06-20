@@ -25,11 +25,11 @@
     <div id="back-btn-container">
       <button role="button" id="back-btn">Back to Start</button>
       </div>
-    <v-overlay 
+    <v-overlay
       :value="overlay"
-      opacity="0.8" 
+      opacity="0.8"
       z-index="2"/>
-    <DialogMessage 
+    <DialogMessage
       :dialogMessage="dialogMessage"
       :dialogTitle="dialogTitle"
       :dialogText="dialogText" />
@@ -108,7 +108,7 @@
           preference: 'nearest',
           radius: 5,
           source: 'outdoor',
-        }, this.checkStreetView)        
+        }, this.checkStreetView)
       },
       getRandomLatLng(selectedAreas) {
         if(selectedAreas == null || selectedAreas == undefined || !selectedAreas.length || selectedAreas.length <= 0) {
@@ -120,7 +120,7 @@
         let area = selectedAreas[randomAreaIndex]
         let boundBox = this.getAreaBoundBox(area)
         this.turfPoly = this.toTurfPoly(area)
-        
+
         let pointInsidePolygon = null;
 
         while(pointInsidePolygon == null || pointInsidePolygon == undefined){
@@ -134,7 +134,7 @@
             }
           }
         }
-        
+
         var lat = pointInsidePolygon.geometry.coordinates[0]
         var lng = pointInsidePolygon.geometry.coordinates[1]
         console.log("lat/lon:      "+ lat + "  " + lng)
@@ -153,7 +153,7 @@
 
         let firstPoint = points[0]
         let coords = [firstPoint.lat(), firstPoint.lng()]
-        pArr.push(coords)        
+        pArr.push(coords)
         return polygon([pArr])
       },
       getAreaBoundBox(area) {
@@ -294,7 +294,7 @@
         this.dialogMessage = true
         this.room.off()
         this.room.remove()
-        
+
         setTimeout(() => {
           this.$router.push({ name: 'home' })
         }, 5000)
@@ -329,7 +329,6 @@
             if (this.playerNumber != 1) {
               this.randomLat = snapshot.child('streetView/round' + this.round + '/latitude').val()
               this.randomLng = snapshot.child('streetView/round' + this.round + '/longitude').val()
-              console.log("1:   " + this.randomLat + "  " + this.randomLng)
               this.loadDecidedStreetView()
             }
           }
@@ -392,9 +391,9 @@
 <style scoped>
   #game-page {
     position: relative;
-    height: 100%; 
-    width: 100%; 
-    top: 0; 
+    height: 100%;
+    width: 100%;
+    top: 0;
     left: 0;
   }
 
@@ -408,7 +407,7 @@
   }
 
   #back-btn {
-    width:100%; 
+    width:100%;
     height:100%;
     background-color: #313131;
     border-radius: 20px 20px 0px 0px;
@@ -417,17 +416,17 @@
 
   #street-view-container {
     position: absolute;
-    height: 100%; 
-    width: 100%; 
-    top: 0; 
-    left: 0; 
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
   }
 
   #street-view {
     position: relative;
     min-height: 100%;
     width: 100%;
-  } 
+  }
 
   @media (max-width: 450px) {
     #game-page {

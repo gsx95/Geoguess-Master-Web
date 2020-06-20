@@ -283,7 +283,7 @@
             }
             this.cardTitle = 'Set location'
             window.addEventListener('keydown', function(e) {
-              if (e.keyCode != 46) {
+              if (e.keyCode != 46 && e.keyCode != 8) {
                 return
               }
               if(self.selectedPolygon == null || self.selectedPolygon == undefined) {
@@ -322,6 +322,7 @@
                       fillColor: '#000000',
                       fillOpacity: 0.35
                     }));
+                    self.updateAreasDB();
                   }
                   self.areas[self.areas.length - 1].setMap(self.map);
                   self.areas[self.areas.length - 1].addListener('click', function(e, p1, p2) {
@@ -334,6 +335,24 @@
 
             })
           }
+        })
+      },
+      updateAreasDB() {
+        let areasData = [];
+        for (let i = 0;i<this.areas.length;i++) {
+            let area = this.areas[i];
+            let points = area.getPaths().getArray()[0].i;
+            let areaData = [];
+            for(let j = 0;j<points.length;j++) {
+                let point = points[j];
+                let lat = point.lat()
+                let lon = point.lng()
+                areaData.push({"lat": lat, "lng" : lon});
+            }
+            areasData.push(areaData);
+        }
+        this.room.update({
+          areas: areasData,
         })
       },
       selectArea(polygon, self) {
@@ -363,6 +382,7 @@
           }
         }
         this.selectedPolygon = null
+        this.updateAreasDB();
       },
       setLocation() {
       // Start the game
